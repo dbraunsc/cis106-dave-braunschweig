@@ -1,0 +1,50 @@
+# CIS 106 JavaScript Tests
+#
+# References:
+#   https://docs.github.com/en/free-pro-team@latest/actions
+#   https://docs.github.com/en/free-pro-team@latest/actions/guides/building-and-testing-python
+#   https://docs.github.com/en/free-pro-team@latest/actions/guides/building-and-testing-nodejs
+
+name: CIS 106 JavaScript Tests
+
+on: [push]
+
+jobs:
+  build:
+    name: Run CIS 106 JavaScript Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Copy repository
+      uses: actions/checkout@v2
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Node.js packages
+      run: |
+        npm install
+        npm install eslint
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install Python packages
+      run: |
+        # install flake8, pytest, and any requirements.txt 
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with eslint
+      run: |
+        # run eslint
+        npx eslint . --no-eslintrc
+
+    - name: Test with pytest
+      run: |
+        pytest .github/workflows/
